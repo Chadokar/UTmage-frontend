@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import IconButton from "@mui/material/IconButton";
+import { WbSunny, DarkMode } from "@mui/icons-material";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+import "./App.css"; // Import your CSS file here
+import {
+  CustomThemeProvider,
+  useThemeContext,
+} from "./components/ThemeContext";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import Navigation from "./pages/Navigation";
+import { ToastContainer } from "react-toastify";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-function App() {
+const queryClient: QueryClient = new QueryClient();
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Provider store={store}>
+        <CustomThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <MainComponent />
+            <ToastContainer />
+          </QueryClientProvider>
+        </CustomThemeProvider>
+      </Provider>
+    </BrowserRouter>
+  );
+};
+
+const MainComponent: React.FC = () => {
+  const { toggleTheme, mode } = useThemeContext();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navigation />
+      <SwitchTransition>
+        <CSSTransition key={mode} classNames="icon" timeout={300}>
+          <IconButton
+            className="toggle-button"
+            color="primary"
+            onClick={toggleTheme}
+          >
+            {mode === "light" ? (
+              <WbSunny fontSize="large" />
+            ) : (
+              <DarkMode fontSize="large" />
+            )}
+          </IconButton>
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   );
-}
+};
 
 export default App;
