@@ -61,7 +61,7 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({
                 },
                 text: {
                   primary: "#ffffff",
-                  secondary: "#aaaaaa",
+                  secondary: "#bbbbbb",
                 },
               }),
         },

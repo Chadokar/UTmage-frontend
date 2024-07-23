@@ -5,7 +5,8 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 const RequireAuth: React.FC = () => {
   const token = localStorage.getItem("token");
   const location = useLocation();
-  return token && !(token === "undefined") ? (
+  console.log("token : ", token);
+  return token && token !== "undefined" ? (
     <Outlet />
   ) : (
     <Navigate to={"/login"} state={{ from: location }} replace />

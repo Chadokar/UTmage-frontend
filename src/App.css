@@ -3,6 +3,9 @@
   height: 100vh;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
 /* styles.css */
 
 .App .toggle-button {

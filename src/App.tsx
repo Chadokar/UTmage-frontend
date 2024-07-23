@@ -43,6 +43,12 @@ const MainComponent: React.FC = () => {
             className="toggle-button"
             color="primary"
             onClick={toggleTheme}
+            sx={{
+              backgroundColor: "#222",
+              ":hover": {
+                backgroundColor: "#333",
+              },
+            }}
           >
             {mode === "light" ? (
               <WbSunny fontSize="large" />

@@ -15,11 +15,15 @@ import {
 } from "react-router-dom";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { axiosGet } from "../services/querycalles";
-import { RedirectResponse } from "../types";
+import { ProfileProps, RedirectResponse } from "../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { Avatar } from "@mui/material";
 
 const Navbar: React.FC = () => {
   const theme: Theme = useTheme();
   //   const navigate: NavigateFunction = useNavigate();
+  const user: ProfileProps = useSelector((state: RootState) => state.user.data);
 
   const {
     mutate: redirectCall,
@@ -60,20 +64,36 @@ const Navbar: React.FC = () => {
               Company Logo
             </Link>
           </Typography>
-          <Button
-            color="inherit"
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-            }}
-          >
-            <Link
-              to="/login"
-              style={{ textDecoration: "none", color: "inherit" }}
+          {!user && (
+            <Button
+              color="inherit"
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }}
             >
-              Login
-            </Link>
-          </Button>
+              <Link
+                to="/login"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Login
+              </Link>
+            </Button>
+          )}
+
+          {user && (
+            <IconButton color="inherit">
+              <Link
+                to="/profile"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Avatar
+                  alt={user?.first_name[0] || "Y"}
+                  src={user?.thumbnail}
+                />
+              </Link>
+            </IconButton>
+          )}
           <Tooltip title="Register">
             <IconButton
               color="inherit"

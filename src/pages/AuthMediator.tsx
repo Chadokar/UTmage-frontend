@@ -9,6 +9,8 @@ import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { setUser } from "../redux/reducers/User";
 import { setChannel } from "../redux/reducers/Channel";
 import { Navigate, useLocation } from "react-router-dom";
+import createToast from "../services/createToast";
+import Loader from "../components/Loader";
 
 const AuthMediator: React.FC = () => {
   // get "code" from URL which is provided as a query parameter
@@ -31,12 +33,18 @@ const AuthMediator: React.FC = () => {
           { code }
         );
         const data = response.data;
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("channel", JSON.stringify(data.channel));
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        dispatch(setUser(data.user));
-        dispatch(setChannel(data.channel));
+        if (!data.success) {
+          createToast(
+            data.error?.message || data.error?.detail || data.error,
+            "error"
+          );
+        } else {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("channel", JSON.stringify(data.channel));
+          localStorage.setItem("user", JSON.stringify(data.user));
+          dispatch(setUser(data.user));
+          dispatch(setChannel(data.channel));
+        }
         return data;
       } catch (error: any) {
         return error;
@@ -45,22 +53,7 @@ const AuthMediator: React.FC = () => {
   });
   console.log("data: ", data);
   if (isLoading) {
-    return (
-      <Backdrop
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-        open={true}
-      >
-        <CircularProgress color="inherit" size={60} />
-        <Typography variant="h6" mt={2}>
-          Loading...
-        </Typography>
-      </Backdrop>
-    );
+    return <Loader />;
   } else if (error) {
     return (
       <Box>

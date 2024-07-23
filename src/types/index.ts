@@ -56,3 +56,22 @@ export type channel = {
   url: string;
   yt_channel_id: string;
 };
+
+export interface ProfileProps {
+  first_name: string;
+  last_name?: string;
+  email: string;
+  yt_channel?: string;
+  thumbnail: string;
+  publishedAt: string;
+}
+
+export interface ChannelProps {
+  title: string;
+  description: string;
+  url: string;
+  yt_channel_id: string;
+  subscriberCount: number;
+  viewCount: number;
+  videoCount: number;
+}
