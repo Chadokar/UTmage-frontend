@@ -25,6 +25,7 @@ const useVideo = (
       return response.data;
     },
     refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 50,
     // refetchOnMount: false,
     retry: 2,
   });
