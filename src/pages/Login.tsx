@@ -11,11 +11,16 @@ import {
 import { loginpayload } from "../types";
 import { login } from "../services/userManager";
 import { AnyAction, Dispatch } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { RootState } from "../redux/store";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<Dispatch<AnyAction>>();
+  const user = useSelector((state: RootState) => state.user.data);
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<loginpayload>({
     email: "",
@@ -41,6 +46,12 @@ const LoginForm: React.FC = () => {
       [name]: value,
     });
   };
+
+  React.useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
