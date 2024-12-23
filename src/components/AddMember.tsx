@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import createToast from "../services/createToast";
+import { axiosPostRequest } from "../services/querycalles";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MemberType {
   name: string;
@@ -57,21 +59,38 @@ const AddMember: React.FC = () => {
     });
   };
 
+  const queryClient = useQueryClient();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle submit logic here
-    await axios
-      .post("/user/add-member", formData)
+    // await axios
+    //   .post("/user/add-member", formData)
+    //   .then((response) => {
+    //     createToast("success", response.data.message);
+    //   })
+    //   .catch((error) => {
+    //     createToast(
+    //       "error",
+    //       error?.message ||
+    //         error?.message ||
+    //         error?.response?.data.message ||
+    //         "An error occurred"
+    //     );
+    //   });
+    axiosPostRequest("/user/add-member", {}, formData)
       .then((response) => {
-        createToast("success", response.data.message);
+        console.log("response: ", response);
+        createToast("member added successfully", "success");
+        queryClient.invalidateQueries({
+          queryKey: ["members"],
+        });
       })
       .catch((error) => {
+        console.error("Error adding member: ", error.response.data);
         createToast(
-          "error",
-          error?.message ||
-            error?.message ||
-            error?.response?.data.message ||
-            "An error occurred"
+          error?.response?.data.error || error?.message || "An error occurred",
+          "error"
         );
       });
   };

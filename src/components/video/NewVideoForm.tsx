@@ -5,7 +5,7 @@ import { tilteDescriptionSubmit } from "../../services/manager";
 const NewVideoForm: React.FC = () => {
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
-  console.log("video form");
+  // console.log("video form");
 
   const handleTitDescriptionSubmit = async () => {
     tilteDescriptionSubmit({ title, description });

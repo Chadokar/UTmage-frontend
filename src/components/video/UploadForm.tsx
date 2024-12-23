@@ -1,59 +1,4 @@
-// import React, { useState, ChangeEvent } from "react";
-// import axios, { AxiosProgressEvent } from "axios";
-
-// const VideoUpload: React.FC = () => {
-//   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-//   const [uploadProgress, setUploadProgress] = useState<number>(0);
-
-//   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-//     if (event.target.files) {
-//       setSelectedFile(event.target.files[0]);
-//     }
-//   };
-
-//   const handleUpload = async () => {
-//     if (!selectedFile) {
-//       alert("Please select a file first");
-//       return;
-//     }
-
-//     const formData = new FormData();
-//     formData.append("video", selectedFile);
-
-//     try {
-//       const response = await axios.post("/video/upload", formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//         onUploadProgress: (progressEvent: AxiosProgressEvent) => {
-//           if (progressEvent.total) {
-//             const percentCompleted = Math.round(
-//               (progressEvent.loaded * 100) / progressEvent.total
-//             );
-//             setUploadProgress(percentCompleted);
-//           }
-//         },
-//       });
-
-//       console.log("Video uploaded successfully:", response.data);
-//     } catch (error) {
-//       console.error("Error uploading video:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" onChange={handleFileChange} />
-//       <button onClick={handleUpload}>Upload Video</button>
-//       {uploadProgress > 0 && <p>Upload Progress: {uploadProgress}%</p>}
-//     </div>
-//   );
-// };
-
-// export default VideoUpload;
-
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import {
   Container,
   Box,
@@ -66,18 +11,45 @@ import {
 import { Upload as UploadIcon } from "@mui/icons-material";
 import { Player } from "video-react";
 import "video-react/dist/video-react.css"; // import css
-import axios, { AxiosProgressEvent } from "axios";
-import { uploadFileToYT } from "../../services/manager";
+// import axios, { AxiosProgressEvent } from "axios";
+import { tilteDescriptionSubmit, uploadFileToYT } from "../../services/manager";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { AnyAction, Dispatch } from "@reduxjs/toolkit";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface UploadFormProps {
   isModel?: boolean;
 }
 
 const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  // get id from the url using useParams
+  // const dispatch = useDispatch<Dispatch<AnyAction>>();
+  // const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  // const { video, success } = useSelector(
+  //   (state: RootState) => state.video.data
+  // );
+  // const { video, success } = JSON.parse(
+  //   localStorage.getItem("video") || "{video: null, success: false}"
+  // );
+
+  // console.log("video: ", video);
+
+  const { video } = useSelector((state: RootState) => state.video.data);
+
+  // const user: ProfileProps = useSelector((state: RootState) => state.user.data);
+  const [videoFile, setVideoFile] = useState<File | null | string>(
+    typeof video?.backend_name === "string" ? video?.backend_name : null
+  );
+  const [thumbnailFile, setThumbnailFile] = useState<File | string | null>(
+    null
+  );
+  const [title, setTitle] = useState<string>(video?.title || "");
+  const [description, setDescription] = useState<string>(
+    video?.description || ""
+  );
   const [videoProgress, setVideoProgress] = useState<number>(0);
   const [thumbnailProgress, setThumbnailProgress] = useState<number>(0);
 
@@ -93,11 +65,16 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
     }
   };
 
-  const handleTitDescriptionSubmit = () => {
-    if (title && description) {
-      console.log("Title:", title);
-      console.log("Description:", description);
-    }
+  const handleTitDescriptionSubmit = async () => {
+    tilteDescriptionSubmit({
+      id: video?.id,
+      title,
+      description,
+    }).then((response) => {
+      queryClient.invalidateQueries({
+        queryKey: ["videos", { id: video?.id }],
+      });
+    });
   };
 
   const handleVideoUpload = () => {
@@ -105,8 +82,37 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
       alert("Please select a video file first");
       return;
     }
-    uploadFileToYT(videoFile, "/video/upload", setVideoProgress, "video");
+    uploadFileToYT(
+      videoFile,
+      // "http://localhost:8001/video/upload",
+      "http://localhost:8001/video/bucket/upload",
+      setVideoProgress,
+      "video",
+      { videoId: video?.id }
+    );
   };
+
+  // useEffect(() => {
+  //   console.log("video: ", video);
+  //   if (video?.id == id) {
+  //     setTitle(video?.title);
+  //     setDescription(video?.description);
+  //     localStorage.setItem("calls", "0");
+  //   } else if (!isModel) {
+  //     dispatch(setVideoId(id));
+  //     queryClient.invalidateQueries({ queryKey: ["videos", { id }] });
+  //     setTimeout(() => {
+  //       localStorage.setItem("calls", localStorage.getItem("calls") || "0" + 1);
+  //       const calls = localStorage.getItem("calls") || "0";
+  //       if (calls <= "1") {
+  //         window.location.reload();
+  //       } else {
+  //         localStorage.setItem("calls", "0");
+  //         navigate("/");
+  //       }
+  //     }, 1000);
+  //   }
+  // }, [id]);
 
   const handleThumbnailUpload = () => {
     if (!thumbnailFile) {
@@ -117,15 +123,21 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
       thumbnailFile,
       "/video/thumbnail",
       setThumbnailProgress,
-      "file"
+      "file",
+      { imageId: "thumbnail" }
     );
   };
+  // if (!video && id) {
+  //   // console.error("Error : ", error);
+  //   return <Navigate to={"/"} state={{ from: location }} replace />;
+  // }
 
   return (
     <Container>
       <Box mb={4}>
         <Typography variant="h4" gutterBottom>
-          {isModel ? "Start" : "Upload"} Video
+          {/* {isModel ? "Start" : "Upload"} Video */}
+          Upload Video
         </Typography>
         <TextField
           label="Title"
@@ -169,150 +181,161 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
               disabled={description && title ? false : true}
               onClick={handleTitDescriptionSubmit}
             >
-              {isModel ? "Start" : "Publish"}
+              {/* {isModel ? "Start" : "Save"} */}
+              Save
             </Button>
           </Box>
         </Box>
       </Box>
 
-      {!isModel && (
-        <Grid
-          container
-          spacing={2}
-          mb={3}
-          ml={0}
+      {/* {!isModel && ( */}
+      <Grid
+        container
+        spacing={2}
+        mb={3}
+        ml={0}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Box
+          width={500}
+          height={300}
           display="flex"
+          justifyContent="center"
           alignItems="center"
-          justifyContent="space-between"
+          border="2px dashed grey"
+          borderRadius={4}
+          position="relative"
+          mr={2}
+          sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}
         >
-          <Box
-            width={500}
-            height={300}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            border="2px dashed grey"
-            borderRadius={4}
-            position="relative"
-            mr={2}
-            sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}
-          >
-            {videoFile ? (
-              <Player
-                playsInline
-                src={URL.createObjectURL(videoFile)}
-                width={100}
-                height={140}
+          {videoFile ? (
+            <Player
+              playsInline
+              src={
+                typeof videoFile === "string"
+                  ? `http://localhost:8001/uploads/${videoFile}`
+                  : URL.createObjectURL(videoFile)
+              }
+              width={100}
+              height={140}
+            />
+          ) : (
+            <IconButton color="primary" component="label" size="large">
+              <UploadIcon fontSize="inherit" />
+              <input
+                type="file"
+                accept="video/*"
+                hidden
+                onChange={handleVideoChange}
               />
-            ) : (
-              <IconButton color="primary" component="label" size="large">
-                <UploadIcon fontSize="inherit" />
-                <input
-                  type="file"
-                  accept="video/*"
-                  hidden
-                  onChange={handleVideoChange}
-                />
-              </IconButton>
-            )}
+            </IconButton>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 2,
+          }}
+        >
+          <Box>
+            <Button
+              variant="outlined"
+              disabled={!videoFile}
+              sx={{ marginRight: 1 }}
+              onClick={() => setVideoFile(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              disabled={!videoFile}
+              onClick={handleVideoUpload}
+            >
+              Publish Video
+            </Button>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: 2,
-            }}
-          >
-            <Box>
-              <Button
-                variant="outlined"
-                disabled={!videoFile}
-                sx={{ marginRight: 1 }}
-                onClick={() => setVideoFile(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                disabled={!videoFile}
-                onClick={handleVideoUpload}
-              >
-                Publish Video
-              </Button>
-            </Box>
-          </Box>
-        </Grid>
-      )}
+        </Box>
+      </Grid>
 
-      {!isModel && (
-        <Grid
-          container
-          spacing={2}
-          my={3}
-          ml={0}
+      {/* )} */}
+
+      {/* {!isModel && ( */}
+      <Grid
+        container
+        spacing={2}
+        my={3}
+        ml={0}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Box
+          width={500}
+          height={300}
           display="flex"
+          justifyContent="center"
           alignItems="center"
-          justifyContent="space-between"
+          border="2px dashed grey"
+          borderRadius={4}
+          position="relative"
+          mr={2}
+          sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}
         >
-          <Box
-            width={500}
-            height={300}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            border="2px dashed grey"
-            borderRadius={4}
-            position="relative"
-            mr={2}
-            sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}
-          >
-            {thumbnailFile ? (
-              <img
-                src={URL.createObjectURL(thumbnailFile)}
-                alt="Thumbnail"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          {thumbnailFile ? (
+            <img
+              src={
+                // check is thumbnail is a file or a string
+                typeof thumbnailFile === "string"
+                  ? `http://localhost:8001/uploads/${thumbnailFile}`
+                  : URL.createObjectURL(thumbnailFile)
+              }
+              alt="Thumbnail"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <IconButton color="primary" component="label" size="large">
+              <UploadIcon fontSize="inherit" />
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleThumbnailChange}
               />
-            ) : (
-              <IconButton color="primary" component="label" size="large">
-                <UploadIcon fontSize="inherit" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleThumbnailChange}
-                />
-              </IconButton>
-            )}
+            </IconButton>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 2,
+          }}
+        >
+          <Box>
+            <Button
+              variant="outlined"
+              disabled={!thumbnailFile}
+              sx={{ marginRight: 1 }}
+              onClick={() => setThumbnailFile(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              disabled={!thumbnailFile}
+              onClick={handleThumbnailUpload}
+            >
+              Publish Thumbnail
+            </Button>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: 2,
-            }}
-          >
-            <Box>
-              <Button
-                variant="outlined"
-                disabled={!thumbnailFile}
-                sx={{ marginRight: 1 }}
-                onClick={() => setThumbnailFile(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                disabled={!thumbnailFile}
-                onClick={handleThumbnailUpload}
-              >
-                Publish Thumbnail
-              </Button>
-            </Box>
-          </Box>
-        </Grid>
-      )}
+        </Box>
+      </Grid>
+      {/* )} */}
     </Container>
   );
 };
 
-export default UploadForm;
+export default React.memo(UploadForm);

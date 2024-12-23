@@ -20,7 +20,7 @@ const ProfileHeader: React.FC = () => {
   const channel: ChannelProps = JSON.parse(
     localStorage.getItem("channel") || ""
   );
-  console.log("user: ", user);
+  console.log("channel: ", channel);
 
   if (!user || user === undefined || user === null || !channel) {
     return <Loader />;
@@ -53,7 +53,8 @@ const ProfileHeader: React.FC = () => {
         src={user?.thumbnail}
       />
       <Typography variant="h4">
-        {user.first_name} {user.last_name}
+        {/* {user.first_name} {user.last_name} */}
+        {channel.title}
       </Typography>
       <Typography variant="body1">{channel.url}</Typography>
       <Typography variant="body2" color="text.secondary">
@@ -176,4 +177,4 @@ const ProfileHeader: React.FC = () => {
   );
 };
 
-export default ProfileHeader;
+export default React.memo(ProfileHeader);
