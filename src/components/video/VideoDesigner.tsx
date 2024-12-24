@@ -75,9 +75,12 @@ const VideoDesigner: React.FC = () => {
     useQuery({
       queryKey: ["videos", { id: video?.id }],
       queryFn: async (): Promise<any> => {
-        const response = await axiosGet<any>(`http://localhost:8001/image/`, {
-          id: video?.id,
-        });
+        const response = await axiosGet<any>(
+          `${process.env.REACT_APP_FILE_BACKEND_URL}/image/`,
+          {
+            id: video?.id,
+          }
+        );
         return response.data;
       },
       refetchOnWindowFocus: false,
@@ -107,7 +110,7 @@ const VideoDesigner: React.FC = () => {
     }
     uploadFileToYT(
       thumbnailFile,
-      "http://localhost:8001/image/bucket/upload",
+      `${process.env.REACT_APP_FILE_BACKEND_URL}/image/bucket/upload`,
       setThumbnailProgress,
       "image",
       {
@@ -127,7 +130,9 @@ const VideoDesigner: React.FC = () => {
   const handleDelete = async () => {
     console.log("delete");
     try {
-      await axiosDelete(`http://localhost:8001/image/${focusedImage?.id}`);
+      await axiosDelete(
+        `${process.env.REACT_APP_FILE_BACKEND_URL}/image/${focusedImage?.id}`
+      );
       queryClient.invalidateQueries({
         queryKey: ["videos", { id: video?.id }],
       });
@@ -154,7 +159,7 @@ const VideoDesigner: React.FC = () => {
                   component="img"
                   alt={image.title}
                   height="140"
-                  image={`http://localhost:8001/uploads/${image.backend_name}`}
+                  image={`${process.env.REACT_APP_FILE_BACKEND_URL}/uploads/${image.backend_name}`}
                 />
                 <CardContent>
                   <Typography variant="subtitle2" component="div">
@@ -234,7 +239,7 @@ const VideoDesigner: React.FC = () => {
         <Dialog open={true} onClose={handleClose}>
           <DialogContent>
             <img
-              src={`http://localhost:8001/uploads/${focusedImage.backend_name}`}
+              src={`${process.env.REACT_APP_FILE_BACKEND_URL}/uploads/${focusedImage.backend_name}`}
               alt={focusedImage.title}
               style={{ width: "100%", height: "auto" }}
             />

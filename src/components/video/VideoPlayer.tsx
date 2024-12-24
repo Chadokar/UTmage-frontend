@@ -10,7 +10,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.src = `http://localhost:8001/video/${videoId}`;
+      videoRef.current.src = `${process.env.REACT_APP_FILE_BACKEND_URL}/video/${videoId}`;
     }
   }, [videoId]);
 
@@ -32,7 +32,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
         onContextMenu={(e) => e.preventDefault()} // Disable right-click menu to prevent downloads
       >
         <source
-          src={`http://localhost:8001/video/${videoId}`}
+          src={`${process.env.REACT_APP_FILE_BACKEND_URL}/video/${videoId}`}
           type="video/mp4"
         />
         Your browser does not support the video tag.

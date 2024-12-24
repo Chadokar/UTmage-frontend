@@ -57,7 +57,7 @@ export const tilteDescriptionSubmit = async ({
 }) => {
   try {
     const response = await axiosPostRequest<any>(
-      "http://localhost:8001/video/create",
+      `${process.env.REACT_APP_FILE_BACKEND_URL}/video/create`,
       { id },
       { title, description }
     );

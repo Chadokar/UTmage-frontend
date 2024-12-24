@@ -22,9 +22,12 @@ const useVideo = (
     queryFn: async (): Promise<any> => {
       console.log("id: ", ["videos", { id }]);
 
-      const response = await axiosGet<any>(`http://localhost:8001/video/`, {
-        id: id,
-      });
+      const response = await axiosGet<any>(
+        `${process.env.REACT_APP_FILE_BACKEND_URL}/video/`,
+        {
+          id: id,
+        }
+      );
       dispatch(setVideo(response.data));
       return response.data;
     },

@@ -12,7 +12,7 @@ interface FetchVideosResponse {
 
 const fetchVideos = async ({ pageParam = 1 }): Promise<FetchVideosResponse> => {
   const response = await axiosGet<FetchVideosResponse>(
-    `http://localhost:8001/video/videos?page=${pageParam}`
+    `${process.env.REACT_APP_FILE_BACKEND_URL}/video/videos?page=${pageParam}`
   );
   return response.data;
 };

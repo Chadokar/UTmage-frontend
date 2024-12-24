@@ -33,7 +33,7 @@ const VideoEditor = () => {
     }
     uploadFileToYT(
       videoFile,
-      "http://localhost:8001/video/bucket/upload",
+      `${process.env.REACT_APP_FILE_BACKEND_URL}/video/bucket/upload`,
       setVideoProgress,
       "video",
       { videoId: video?.id }
@@ -84,7 +84,7 @@ const VideoEditor = () => {
               playsInline
               src={
                 typeof videoFile === "string"
-                  ? `http://localhost:8001/uploads/${videoFile}`
+                  ? `${process.env.REACT_APP_FILE_BACKEND_URL}/uploads/${videoFile}`
                   : URL.createObjectURL(videoFile)
               }
               width={100}

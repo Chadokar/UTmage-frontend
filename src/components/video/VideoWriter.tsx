@@ -47,7 +47,7 @@ const VideoWriter = () => {
     e.preventDefault();
     try {
       await axiosPostRequest(
-        "http://localhost:8001/video/create",
+        `${process.env.REACT_APP_FILE_BACKEND_URL}/video/create`,
         { id: video?.id },
         { content: formData.content, title: formData.title }
       );
