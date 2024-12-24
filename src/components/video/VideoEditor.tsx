@@ -1,11 +1,24 @@
-import { Box, Button, Grid, IconButton } from "@mui/material";
-import { ChangeEvent, useState } from "react";
+import { Box, Button, Container, Grid, IconButton } from "@mui/material";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Player } from "video-react";
 import { Upload as UploadIcon } from "@mui/icons-material";
 import { uploadFileToYT } from "../../services/manager";
+// import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { setVideoId } from "../../redux/reducers/VideoId";
+// import CustomVideoPlayer from "./CustomVideoPlayer";
+// import { setVideoId } from "../../redux/reducers/VideoId";
+// import { useQueryClient } from "@tanstack/react-query";
+import { RootState } from "../../redux/store";
 const VideoEditor = () => {
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const { video } = useSelector((state: RootState) => state.video.data);
+
+  const [videoFile, setVideoFile] = useState<File | null | string>(
+    typeof video?.backend_name === "string" ? video?.backend_name : null
+  );
   const [videoProgress, setVideoProgress] = useState<number>(0);
+  const user = useSelector((state: RootState) => state.user.data);
 
   const handleVideoChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -18,57 +31,87 @@ const VideoEditor = () => {
       alert("Please select a video file first");
       return;
     }
-    uploadFileToYT(videoFile, "/video/upload", setVideoProgress, "video");
+    uploadFileToYT(
+      videoFile,
+      "http://localhost:8001/video/bucket/upload",
+      setVideoProgress,
+      "video",
+      { videoId: video?.id }
+    );
   };
 
+  const valid =
+    user &&
+    (user.role === "editor" ||
+      user.role === "admin" ||
+      user.role === "manager" ||
+      user.role === "owner");
+
   return (
-    <div>
+    <Container>
+      {!valid && (
+        <p style={{ color: "red" }}>
+          *You have to be manager or Editor to modify it
+        </p>
+      )}
+      {/* {video ? (
+        <CustomVideoPlayer id={video?.id} />
+      ) : ( */}
       <Grid
         container
-        spacing={1}
+        spacing={2}
+        p={2}
         mb={3}
-        ml={0}
         display="flex"
+        flexDirection={"column"}
         alignItems="center"
         justifyContent="space-between"
       >
         <Box
-          width={500}
-          height={300}
+          width="100%"
           display="flex"
           justifyContent="center"
           alignItems="center"
           border="2px dashed grey"
           borderRadius={4}
+          padding={2}
           position="relative"
           mr={2}
-          sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.1)" } }}
+          sx={{ ":hover": { backgroundColor: "rgba(0,0,0,0.7)" } }}
         >
           {videoFile ? (
             <Player
               playsInline
-              src={URL.createObjectURL(videoFile)}
+              src={
+                typeof videoFile === "string"
+                  ? `http://localhost:8001/uploads/${videoFile}`
+                  : URL.createObjectURL(videoFile)
+              }
               width={100}
               height={140}
             />
           ) : (
             <IconButton color="primary" component="label" size="large">
               <UploadIcon fontSize="inherit" />
-              <input
-                type="file"
-                accept="video/*"
-                hidden
-                onChange={handleVideoChange}
-              />
+              {valid && (
+                <input
+                  type="file"
+                  accept="video/*"
+                  hidden
+                  onChange={handleVideoChange}
+                />
+              )}
             </IconButton>
           )}
         </Box>
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             marginTop: 2,
+            width: "100%",
           }}
+          component={"div"}
         >
           <Box>
             <Button
@@ -84,12 +127,13 @@ const VideoEditor = () => {
               disabled={!videoFile}
               onClick={handleVideoUpload}
             >
-              Publish Video
+              Upload Video
             </Button>
           </Box>
         </Box>
       </Grid>
-    </div>
+      {/* )} */}
+    </Container>
   );
 };
 
