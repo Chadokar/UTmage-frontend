@@ -34,11 +34,17 @@ const AuthMediator: React.FC = () => {
         );
         const data = response.data;
         if (!data.success) {
+          // localStorage.removeItem("token");
+          // localStorage.removeItem("channel");
+          // localStorage.removeItem("user");
           createToast(
             data.error?.message || data.error?.detail || data.error,
             "error"
           );
         } else {
+          localStorage.removeItem("token");
+          localStorage.removeItem("channel");
+          localStorage.removeItem("user");
           localStorage.setItem("token", data.token);
           localStorage.setItem("channel", JSON.stringify(data.channel));
           localStorage.setItem("user", JSON.stringify(data.user));

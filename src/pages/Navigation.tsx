@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from "../services/userManager";
@@ -14,6 +14,9 @@ import {
 } from "../services/routes";
 import { RootState } from "../redux/store";
 import Loader from "../components/Loader";
+// import { UseQueryResult, useQuery } from "@tanstack/react-query";
+// import { axiosGet } from "../services/querycalles";
+// import { setVideo } from "../redux/reducers/Video";
 const LazyProfile = React.lazy(() => import("./Profile"));
 const LazyChannelCustomization = React.lazy(
   () => import("./ChannelCustomization")
@@ -25,7 +28,37 @@ const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const userdata = useSelector((state: RootState) => state.user);
 
-  console.log("userdata: ", userdata);
+  const id = useSelector((state: RootState) => state.videoId.data);
+  // console.log("userdata: ", userdata);
+
+  // const { isLoading, data, error, isSuccess }: UseQueryResult<any, any> =
+  //   useQuery({
+  //     queryKey: ["videos", { id }],
+  //     queryFn: async (): Promise<any> => {
+  //       const response = await axiosGet<any>(`http://localhost:8001/video/`, {
+  //         id: id || undefined,
+  //       });
+  //       return response.data;
+  //     },
+  //     refetchOnWindowFocus: false,
+  //     // refetchOnMount: false,
+  //     retry: 2,
+  //   });
+
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     dispatch(setVideo(data));
+  //     localStorage.setItem("video", JSON.stringify(data));
+  //   } else if (error) {
+  //     const val = {
+  //       data: {
+  //         video: "error",
+  //         success: false,
+  //       },
+  //     };
+  //     localStorage.setItem("video", JSON.stringify(val));
+  //   }
+  // }, [data, isSuccess, error]);
 
   useEffect(() => {
     fetchUserData(dispatch, navigate);
@@ -91,7 +124,7 @@ const Navigation: React.FC = () => {
         </Route>
         <Route element={<RequireAuth />}>
           <Route
-            path="/video/:id"
+            path="/video/:videoId"
             element={
               <Suspense fallback={<Loader />}>
                 <LazyVideoupload />

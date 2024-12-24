@@ -12,6 +12,15 @@ import {
 const BrandingTab = () => {
   return (
     <Box sx={{ maxWidth: 600, margin: "0 auto", padding: 2 }}>
+      <span
+        style={{
+          display: "block",
+          color: "red",
+        }}
+      >
+        *If you are reading this then google developer credentials are
+        expired/limited. So, you can't upload images.
+      </span>
       <Typography variant="h4" gutterBottom>
         Channel customisation
       </Typography>
@@ -83,7 +92,8 @@ const BrandingTab = () => {
       <Box
         sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}
       >
-        <Button variant="outlined">View channel</Button>
+        {/* <Button variant="outlined">View channel</Button> */}
+        <div></div>
         <Box>
           <Button variant="outlined" sx={{ marginRight: 1 }}>
             Cancel

@@ -24,19 +24,23 @@ export async function fetchUserData(
       const data = response.data.user;
       localStorage.setItem("user", JSON.stringify(data));
       dispatch(setUser(data));
-      createToast("welcome back", "success");
+      // createToast("welcome back", "success");
     } else if (token === "undefined") {
       createToast("Please Login", "error");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     }
   } catch (error: any) {
     if (error?.response?.data?.error?.startsWith("Token expired")) {
       localStorage.removeItem("token");
     }
-    createToast(error?.response?.data?.error, "error");
+    // createToast(error?.response?.data?.error, "error");
     createToast("Please Login", "error");
     // localStorage.removeItem("token");
     console.error(error);
-    navigate("/login");
+    const pathname = window.location.pathname;
+    if (pathname !== "/googleauth") navigate("/login");
   }
 }
 

@@ -18,7 +18,7 @@ const CustomizeTabs: React.FC = () => {
       >
         <Tab label="Basic info" value="/customization" />
         <Tab label="Branding" value="/customization/branding" />
-        <Tab label="Layout" value="/customization/layout" />
+        {/* <Tab label="Layout" value="/customization/layout" /> */}
       </Tabs>
     </Box>
   );

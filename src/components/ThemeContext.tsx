@@ -53,7 +53,7 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({
                   main: "#eee",
                 },
                 secondary: {
-                  main: "#f48fb1",
+                  main: "#222222",
                 },
                 background: {
                   default: "#121212",

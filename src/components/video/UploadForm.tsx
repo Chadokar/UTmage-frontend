@@ -13,33 +13,24 @@ import { Player } from "video-react";
 import "video-react/dist/video-react.css"; // import css
 // import axios, { AxiosProgressEvent } from "axios";
 import { tilteDescriptionSubmit, uploadFileToYT } from "../../services/manager";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { useQueryClient } from "@tanstack/react-query";
+import { axiosDelete } from "../../services/querycalles";
+import createToast from "../../services/createToast";
 
 interface UploadFormProps {
   isModel?: boolean;
 }
 
 const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
-  // get id from the url using useParams
-  // const dispatch = useDispatch<Dispatch<AnyAction>>();
-  // const navigate = useNavigate();
   const queryClient = useQueryClient();
-  // const { video, success } = useSelector(
-  //   (state: RootState) => state.video.data
-  // );
-  // const { video, success } = JSON.parse(
-  //   localStorage.getItem("video") || "{video: null, success: false}"
-  // );
-
-  // console.log("video: ", video);
 
   const { video } = useSelector((state: RootState) => state.video.data);
 
-  // const user: ProfileProps = useSelector((state: RootState) => state.user.data);
+  const navigate = useNavigate();
+
   const [videoFile, setVideoFile] = useState<File | null | string>(
     typeof video?.backend_name === "string" ? video?.backend_name : null
   );
@@ -84,59 +75,34 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
     }
     uploadFileToYT(
       videoFile,
-      // "http://localhost:8001/video/upload",
       "http://localhost:8001/video/bucket/upload",
       setVideoProgress,
       "video",
       { videoId: video?.id }
-    );
+    ).then(() => {
+      queryClient.invalidateQueries({
+        queryKey: ["videos", { id: video?.id }],
+      });
+    });
   };
 
-  // useEffect(() => {
-  //   console.log("video: ", video);
-  //   if (video?.id == id) {
-  //     setTitle(video?.title);
-  //     setDescription(video?.description);
-  //     localStorage.setItem("calls", "0");
-  //   } else if (!isModel) {
-  //     dispatch(setVideoId(id));
-  //     queryClient.invalidateQueries({ queryKey: ["videos", { id }] });
-  //     setTimeout(() => {
-  //       localStorage.setItem("calls", localStorage.getItem("calls") || "0" + 1);
-  //       const calls = localStorage.getItem("calls") || "0";
-  //       if (calls <= "1") {
-  //         window.location.reload();
-  //       } else {
-  //         localStorage.setItem("calls", "0");
-  //         navigate("/");
-  //       }
-  //     }, 1000);
-  //   }
-  // }, [id]);
-
-  const handleThumbnailUpload = () => {
-    if (!thumbnailFile) {
-      alert("Please select a thumbnail file first");
-      return;
-    }
-    uploadFileToYT(
-      thumbnailFile,
-      "/video/thumbnail",
-      setThumbnailProgress,
-      "file",
-      { imageId: "thumbnail" }
-    );
+  const handleDelete = () => {
+    axiosDelete(`/admin/video/delete?id=${video?.id}`)
+      .then(() => {
+        // navigate("/profile");
+        // navigate to profile using window.location
+        window.location.href = "/profile";
+      })
+      .catch((error) => {
+        createToast("Error deleting video ", "error");
+        console.log("Error deleting video: ", error);
+      });
   };
-  // if (!video && id) {
-  //   // console.error("Error : ", error);
-  //   return <Navigate to={"/"} state={{ from: location }} replace />;
-  // }
 
   return (
     <Container>
       <Box mb={4}>
         <Typography variant="h4" gutterBottom>
-          {/* {isModel ? "Start" : "Upload"} Video */}
           Upload Video
         </Typography>
         <TextField
@@ -181,14 +147,11 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
               disabled={description && title ? false : true}
               onClick={handleTitDescriptionSubmit}
             >
-              {/* {isModel ? "Start" : "Save"} */}
               Save
             </Button>
           </Box>
         </Box>
       </Box>
-
-      {/* {!isModel && ( */}
       <Grid
         container
         spacing={2}
@@ -272,7 +235,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Box
+        {/* <Box
           width={500}
           height={300}
           display="flex"
@@ -331,9 +294,18 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
               Publish Thumbnail
             </Button>
           </Box>
-        </Box>
+        </Box> */}
       </Grid>
       {/* )} */}
+      {/* Delete Video button */}
+      <Button
+        variant="contained"
+        color="error"
+        onClick={handleDelete}
+        sx={{ marginTop: 2, mb: 2 }}
+      >
+        Delete Video
+      </Button>
     </Container>
   );
 };

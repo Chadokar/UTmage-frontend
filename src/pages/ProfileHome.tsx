@@ -1,70 +1,84 @@
+import React, { useEffect, useRef, useCallback, ReactNode } from "react";
+import { Box, Grid, CircularProgress, Button } from "@mui/material";
 import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { Theme, useTheme } from "@mui/material/styles";
-import { videoData } from "../components/utils/SampleData";
-import { Link } from "react-router-dom";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+} from "@tanstack/react-query";
 import AlertDialogSlide from "../components/profile/Dialog";
-import UploadForm from "../components/video/UploadForm";
+import ImageComponent from "../components/ImageComponent";
+import HereButton from "../components/HereButton";
+import fetchVideos from "../components/utils/api";
+import NewVideoForm from "../components/video/NewVideoForm";
+// import { FetchVideosResponse } from "../types";
+// import { videoData } from "../components/utils/SampleData";
 
-const HereButton = () => {
-  const theme: Theme = useTheme();
-  return (
-    <Tooltip title="Start new video">
-      <IconButton
-        color="inherit"
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
-          ml: 2,
-          position: "absolute",
-          right: ".625rem",
-        }}
-      >
-        <AddRoundedIcon />
-      </IconButton>
-    </Tooltip>
-  );
-};
+const ProfileHome: React.FC = () => {
+  const [page, setPage] = React.useState(1);
+  const {
+    data,
+  }: // fetchNextPage,
+  // hasNextPage,
+  // isFetchingNextPage,
+  // isLoading,
+  UseInfiniteQueryResult<any, Error> = useInfiniteQuery({
+    queryKey: ["videos", { page }],
+    queryFn: async ({ pageParam = 1 }): Promise<any> => {
+      setPage(pageParam);
+      return await fetchVideos({ pageParam });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage || !lastPage?.length || lastPage.length < 20) return false;
+      return lastPage && lastPage.length ? lastPage?.length + 1 : 1;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 2,
+    staleTime: 1000 * 60 * 50,
+  });
 
-const ProfileHome = () => {
+  // console.log("data: ", data);
+
+  // const observer = useRef<IntersectionObserver | null>(null);
+  // const lastVideoRef = useCallback(
+  //   (node: HTMLDivElement) => {
+  //     if (isFetchingNextPage) return;
+  //     if (observer.current) observer.current.disconnect();
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       if (entries[0].isIntersecting && hasNextPage) {
+  //         fetchNextPage();
+  //       }
+  //     });
+  //     if (node) observer.current.observe(node);
+  //   },
+  //   [isFetchingNextPage, fetchNextPage, hasNextPage]
+  // );
+
+  // const handleClick = () => {
+  //   axiosGet("channel/videos")
+  //     .then((res) => {
+  //       console.log("res", res);
+  //     })
+  //     .catch((err) => {
+  //       console.log("err", err);
+  //     });
+  // };
+
   return (
     <Box sx={{ flexGrow: 1, p: 2, mr: 8 }}>
       <AlertDialogSlide button={<HereButton />}>
         <Box p={4}>
-          <UploadForm isModel={true} />
+          <NewVideoForm />
         </Box>
       </AlertDialogSlide>
       <Grid container spacing={2}>
-        {videoData.map((video) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={video.id}>
-            <Link
-              to={`/video/${video.id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <Card>
-                <CardMedia
-                  component="img"
-                  alt={video.title}
-                  height="140"
-                  image={video.imageUrl}
-                />
-                <CardContent>
-                  <Typography variant="subtitle2" component="div">
-                    {video.title}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Link>
-          </Grid>
+        {/* <Button onClick={handleClick}>Load More</Button> */}
+        {data?.pages.map((page: any, index: number) => (
+          <>
+            {page.videos.map((video: any, i: number) => (
+              <ImageComponent key={i} video={video} />
+            ))}
+          </>
         ))}
       </Grid>
     </Box>

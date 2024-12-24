@@ -74,4 +74,49 @@ export interface ChannelProps {
   subscriberCount: number;
   viewCount: number;
   videoCount: number;
+  id: string | number;
+}
+
+export interface VideoProps {
+  title: string;
+  description: string;
+  working: boolean;
+  id: string | number;
+  yt_channel: string | undefined;
+  url: string | undefined;
+}
+
+export interface OtpVerifyResponse {
+  token: string;
+  success: boolean;
+}
+
+export interface RoleCardProps {
+  title: string;
+  description: string;
+  imageSrc: string;
+}
+
+export interface Video {
+  id: string;
+  title: string;
+  imageUrl?: string;
+  uuid?: string;
+}
+
+export interface Pages {
+  id: string;
+  // Add other page properties here
+  videos: Video[];
+}
+
+export interface FetchVideosResponse {
+  pages?: Pages[];
+}
+
+export interface ImageData {
+  id: string;
+  title: string;
+  imageUrl: string;
+  backend_name: string;
 }

@@ -1,9 +1,11 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { axiosGet } from "../services/querycalles";
+import { setVideo } from "../redux/reducers/Video";
 
 const useVideo = (
-  id: string | number | null | undefined
+  id: string | number | null | undefined,
+  dispatch: (arg0: any) => void
 ): {
   isLoading: boolean;
   video: any;
@@ -18,10 +20,12 @@ const useVideo = (
   }: UseQueryResult<any, any> = useQuery({
     queryKey: ["videos", { id }],
     queryFn: async (): Promise<any> => {
+      console.log("id: ", ["videos", { id }]);
+
       const response = await axiosGet<any>(`http://localhost:8001/video/`, {
         id: id,
       });
-      console.log("response: ", response.data);
+      dispatch(setVideo(response.data));
       return response.data;
     },
     refetchOnWindowFocus: false,

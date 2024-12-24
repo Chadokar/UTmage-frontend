@@ -2,11 +2,10 @@ import React from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import { ChannelProps } from "../../types";
 import { axiosPutRequest } from "../../services/querycalles";
+import createToast from "../../services/createToast";
 
 const BasicCustomization = () => {
-  const channel: ChannelProps = JSON.parse(
-    localStorage.getItem("channel") || ""
-  );
+  let channel: ChannelProps = JSON.parse(localStorage.getItem("channel") || "");
   const [data, setData] = React.useState({
     title: channel.title,
     description: channel.description,
@@ -25,7 +24,11 @@ const BasicCustomization = () => {
     e.preventDefault();
     try {
       const response = await axiosPutRequest("/channel", {}, data);
-      console.log("response : ", response);
+      console.log("response : ", response.data);
+      localStorage.removeItem("channel");
+      localStorage.setItem("channel", JSON.stringify(response?.data));
+      channel = JSON.parse(localStorage.getItem("channel") || "");
+      createToast("Channel updated successfully", "success");
     } catch (error) {
       console.error("error : ", error);
     }
@@ -78,14 +81,14 @@ const BasicCustomization = () => {
 
         <Typography
           component="a"
-          href="https://www.youtube.com/@luckys_4s445"
+          href={`https://www.youtube.com/${data.url}`}
           target="_blank"
           rel="noreferrer"
           style={{ color: "inherit" }}
           variant="body1"
           gutterBottom
         >
-          https://www.youtube.com/@luckys_4s445
+          https://www.youtube.com/{data.url}
         </Typography>
         <Box
           sx={{

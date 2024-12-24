@@ -1,14 +1,20 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React from "react";
 import { tilteDescriptionSubmit } from "../../services/manager";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NewVideoForm: React.FC = () => {
   const [title, setTitle] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
+  const queryClient = useQueryClient();
   // console.log("video form");
 
   const handleTitDescriptionSubmit = async () => {
-    tilteDescriptionSubmit({ title, description });
+    tilteDescriptionSubmit({ title, description }).then(() => {
+      queryClient.invalidateQueries({
+        queryKey: ["videos", { page: 1 }],
+      });
+    });
   };
 
   return (

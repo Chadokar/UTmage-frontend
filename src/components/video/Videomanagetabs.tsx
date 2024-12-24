@@ -1,6 +1,8 @@
 import React from "react";
 import { Tabs, Tab, Box } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 const Videomanagetabs: React.FC = () => {
   const navigate = useNavigate();
@@ -8,9 +10,10 @@ const Videomanagetabs: React.FC = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     navigate(newValue);
   };
-  console.log("location: ", location.pathname);
+  const user = useSelector((state: RootState) => state.user.data);
+  // console.log("location: ", location.pathname);
   const values = location.pathname.split("/");
-  console.log(values);
+  // console.log(values);
   let value = "";
   if (values.length > 3) {
     value = values[3];
@@ -23,9 +26,9 @@ const Videomanagetabs: React.FC = () => {
         onChange={handleChange}
         aria-label="customization tabs"
       >
-        <Tab label="Home" value="" />
+        {user?.role === "owner" && <Tab label="Home" value="" />}
         <Tab label="Editor" value="editor" />
-        <Tab label="Writor" value="writor" />
+        <Tab label="Writer" value="writer" />
         <Tab label="Designer" value="designer" />
       </Tabs>
     </Box>

@@ -5,7 +5,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 const RequireAuth: React.FC = () => {
   const token = localStorage.getItem("token");
   const location = useLocation();
-  console.log("token : ", token);
+  // console.log("token : ", token);
   return token && token !== "undefined" ? (
     <Outlet />
   ) : (

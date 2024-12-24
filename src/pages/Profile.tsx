@@ -56,7 +56,7 @@ import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileTabs from "../components/profile/ProfileTabs";
-
+// c
 const ProfilePage: React.FC = () => {
   return (
     <Box

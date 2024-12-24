@@ -17,19 +17,28 @@ const LazyBasicCustomization = React.lazy(
 const LazyUploadForm = React.lazy(
   () => import("../components/video/UploadForm")
 );
-
 const LazyVideoEditor = React.lazy(
   () => import("../components/video/VideoEditor")
+);
+const LazyVideoWriter = React.lazy(
+  () => import("../components/video/VideoWriter")
+);
+const LazyVideoDesigner = React.lazy(
+  () => import("../components/video/VideoDesigner")
 );
 
 // channel customization
 const LazyBrandingCustomization = React.lazy(
   () => import("../components/customize/BrandingCustomize")
 );
-
 const LazyLayoutCustomization = React.lazy(
   () => import("../components/customize/LayoutCustomize")
 );
+
+// forgot password
+const LazyForgotPassword = React.lazy(() => import("../pages/ForgotPassword"));
+const LazyVerifyOtp = React.lazy(() => import("../pages/VerifyOtp"));
+const LazyResetPassword = React.lazy(() => import("../pages/ResetPassword"));
 
 export const errorPageStyle: React.CSSProperties = {
   position: "fixed",
@@ -43,13 +52,6 @@ export const errorPageStyle: React.CSSProperties = {
   justifyContent: "center",
   background: "black",
   color: "white",
-};
-
-const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  youtubeChannel: "https://www.youtube.com/user/JohnDoeChannel",
-  imageUrl: "https://via.placeholder.com/100",
 };
 
 export const navItems: NavItem[] = [
@@ -119,6 +121,39 @@ export const navItems: NavItem[] = [
   //   protected: true,
   //   errorElement: <Error />,
   // },
+  {
+    path: "forgotpassword",
+    label: "video",
+    element: (
+      <Suspense fallback={<Loader />}>
+        <LazyForgotPassword />
+      </Suspense>
+    ),
+    protected: false,
+    errorElement: <Error />,
+  },
+  {
+    path: "verifytoken/:token",
+    label: "video",
+    element: (
+      <Suspense fallback={<Loader />}>
+        <LazyVerifyOtp />
+      </Suspense>
+    ),
+    protected: false,
+    errorElement: <Error />,
+  },
+  {
+    path: "verifytoken/:token",
+    label: "video",
+    element: (
+      <Suspense fallback={<Loader />}>
+        <LazyResetPassword />
+      </Suspense>
+    ),
+    protected: false,
+    errorElement: <Error />,
+  },
 ];
 
 export const navVideoItems: NavItem[] = [
@@ -139,6 +174,28 @@ export const navVideoItems: NavItem[] = [
     element: (
       <Suspense fallback={<Loader />}>
         <LazyVideoEditor />
+      </Suspense>
+    ),
+    protected: true,
+    errorElement: <Error />,
+  },
+  {
+    path: "writer",
+    label: "writer",
+    element: (
+      <Suspense fallback={<Loader />}>
+        <LazyVideoWriter />
+      </Suspense>
+    ),
+    protected: true,
+    errorElement: <Error />,
+  },
+  {
+    path: "designer",
+    label: "designer",
+    element: (
+      <Suspense fallback={<Loader />}>
+        <LazyVideoDesigner />
       </Suspense>
     ),
     protected: true,

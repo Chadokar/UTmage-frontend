@@ -42,7 +42,9 @@ export const axiosPostRequest = async <T>(
 ): Promise<AxiosResponse<T>> => {
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${
+        bodyObj?.token || localStorage.getItem("token")
+      }`,
     },
   };
   const query = queryObj ? qs.stringify(queryObj) : "";
@@ -61,7 +63,7 @@ export const axiosPutRequest = async <T>(
 ): Promise<AxiosResponse<T>> => {
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${bodyObj.token || localStorage.getItem("token")}`,
     },
   };
   const query = queryObj ? qs.stringify(queryObj) : "";

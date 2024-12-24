@@ -4,7 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+
 import { Theme, useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -19,6 +19,7 @@ import { ProfileProps, RedirectResponse } from "../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Avatar } from "@mui/material";
+import TemporaryDrawer from "../components/Drawer";
 
 const Navbar: React.FC = () => {
   const theme: Theme = useTheme();
@@ -53,7 +54,7 @@ const Navbar: React.FC = () => {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
+            <TemporaryDrawer />
           </IconButton>
           <Typography
             variant="h6"
@@ -94,7 +95,7 @@ const Navbar: React.FC = () => {
               </Link>
             </IconButton>
           )}
-          <Tooltip title="Register">
+          <Tooltip title="Register/Login">
             <IconButton
               color="inherit"
               sx={{
