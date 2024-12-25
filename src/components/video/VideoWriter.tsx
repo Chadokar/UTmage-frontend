@@ -56,7 +56,7 @@ const VideoWriter = () => {
       });
       createToast("Content Submitted successfully", "success");
     } catch (error: any) {
-      console.error("Error uploading video: ", error);
+      // console.error("Error uploading video: ", error);
     }
   };
 

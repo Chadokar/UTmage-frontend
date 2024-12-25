@@ -12,7 +12,7 @@ const Videoupload = () => {
   const id = useParams<{ videoId: string }>().videoId;
   // convert id to number
   const { isLoading, video, error } = useVideo(Number(id), dispatch);
-  console.log("video: ", video);
+  // console.log("video: ", video);
 
   return (
     <div>

@@ -24,13 +24,13 @@ const BasicCustomization = () => {
     e.preventDefault();
     try {
       const response = await axiosPutRequest("/channel", {}, data);
-      console.log("response : ", response.data);
+      // console.log("response : ", response.data);
       localStorage.removeItem("channel");
       localStorage.setItem("channel", JSON.stringify(response?.data));
       channel = JSON.parse(localStorage.getItem("channel") || "");
       createToast("Channel updated successfully", "success");
     } catch (error) {
-      console.error("error : ", error);
+      // console.error("error : ", error);
     }
   };
 

@@ -15,7 +15,7 @@ import Loader from "../components/Loader";
 const AuthMediator: React.FC = () => {
   // get "code" from URL which is provided as a query parameter
   const code = new URLSearchParams(window.location.search).get("code");
-  console.log("code: ", code);
+  // console.log("code: ", code);
   const dispatch = useDispatch<Dispatch<AnyAction>>();
   const location = useLocation();
 
@@ -57,7 +57,7 @@ const AuthMediator: React.FC = () => {
       }
     },
   });
-  console.log("data: ", data);
+  // console.log("data: ", data);
   if (isLoading) {
     return <Loader />;
   } else if (error) {

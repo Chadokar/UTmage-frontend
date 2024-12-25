@@ -8,8 +8,8 @@ interface CustomVideoPlayerProps {
 
 const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = () => {
   const { video } = useSelector((state: RootState) => state.video.data);
-  console.log("video: ", video);
-  console.log("video.url: ", video?.url);
+  // console.log("video: ", video);
+  // console.log("video.url: ", video?.url);
 
   // Example videoId; replace this with dynamic ID if needed
   const videoId = "H3M4RTi_s9U";

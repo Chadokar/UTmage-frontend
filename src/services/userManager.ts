@@ -38,7 +38,7 @@ export async function fetchUserData(
     // createToast(error?.response?.data?.error, "error");
     createToast("Please Login", "error");
     // localStorage.removeItem("token");
-    console.error(error);
+    // console.error(error);
     const pathname = window.location.pathname;
     if (pathname !== "/googleauth") navigate("/login");
   }
@@ -53,7 +53,7 @@ export const login = async (
     const response = await axios.post("/user/login", payload);
     const data = response.data;
     // console.log("data: ", data);
-    console.log("data: ", data);
+    // console.log("data: ", data);
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("channel", JSON.stringify(data.channel));
@@ -65,7 +65,7 @@ export const login = async (
     if (error?.response?.data?.error?.startsWith("Token expired"))
       localStorage.removeItem("token");
     createToast(error?.response?.data?.error, "error");
-    console.log(error);
+    // console.log(error);
     return error;
   }
 };

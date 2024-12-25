@@ -39,22 +39,22 @@ const DashboardContent: React.FC = () => {
       <Grid container spacing={3} sx={{ mt: 2 }}>
         <RoleCard
           title="Video Editor"
-          description="The video editor is responsible for editing raw footage, applying effects, and ensuring the final video meets quality standards. Edited videos are uploaded here for review."
+          description="The video editor can access the design and raw video file, then upload the final video to the platform."
           imageSrc="/path/to/video-editor-image.jpg" // Replace with actual image path
         />
         <RoleCard
           title="Designer"
-          description="The designer creates visually appealing thumbnails and other graphic elements required for video production. Their work enhances the video's attractiveness and click-through rate."
+          description="The designer can watch the video, upload the thumbnail, and other design elements to the platform."
           imageSrc="/path/to/designer-image.jpg" // Replace with actual image path
         />
         <RoleCard
           title="Content Writer"
-          description="The content writer crafts compelling descriptions and titles for each video. They ensure that the content is engaging and optimized for search engines, contributing to higher visibility and audience retention."
+          description="The content writer watch the video, write the title, description, and tags, then upload the script to the platform."
           imageSrc="/path/to/content-writer-image.jpg" // Replace with actual image path
         />
         <RoleCard
           title="Manager"
-          description="The manager oversees the entire production process, ensuring all tasks are completed on time. They review the final video and accompanying materials before publishing them to the YouTube account."
+          description="The manager oversees the entire production process, ensuring all tasks are completed on time."
           imageSrc="/path/to/manager-image.jpg" // Replace with actual image path
         />
       </Grid>

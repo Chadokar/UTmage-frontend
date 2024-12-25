@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 30000), // Exponential backoff delay
     onSuccess: (response) => {
-      console.log("response: ", response.url);
+      // console.log("response: ", response.url);
       window.location.href = response.url;
     },
   });

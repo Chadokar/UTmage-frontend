@@ -20,7 +20,7 @@ const useVideo = (
   }: UseQueryResult<any, any> = useQuery({
     queryKey: ["videos", { id }],
     queryFn: async (): Promise<any> => {
-      console.log("id: ", ["videos", { id }]);
+      // console.log("id: ", ["videos", { id }]);
 
       const response = await axiosGet<any>(
         `${process.env.REACT_APP_FILE_BACKEND_URL}/video/`,

@@ -87,7 +87,7 @@ const VideoDesigner: React.FC = () => {
       // refetchOnMount: false,
       retry: 2,
     });
-  console.log("data: ", data);
+  // console.log("data: ", data);
 
   const handleCardClick = (image: ImageData) => {
     setFocusedImage(image);
@@ -128,7 +128,7 @@ const VideoDesigner: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    console.log("delete");
+    // console.log("delete");
     try {
       await axiosDelete(
         `${process.env.REACT_APP_FILE_BACKEND_URL}/image/${focusedImage?.id}`
@@ -139,7 +139,7 @@ const VideoDesigner: React.FC = () => {
       handleClose();
       createToast("Image deleted successfully", "success");
     } catch (error: any) {
-      console.error("Error deleting image: ", error);
+      // console.error("Error deleting image: ", error);
       createToast("Error deleting image", "error");
     }
   };

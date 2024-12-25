@@ -35,7 +35,7 @@ function TemporaryDrawer() {
       staleTime: 1000 * 60 * 50,
     });
 
-  console.log(data);
+  // console.log(data);
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -71,12 +71,16 @@ function TemporaryDrawer() {
 
   return (
     <div>
-      <span onClick={toggleDrawer(true)}>
-        <MenuIcon />{" "}
-      </span>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
+      {data && data.members && data.members.length > 0 && (
+        <>
+          <span onClick={toggleDrawer(true)}>
+            <MenuIcon />{" "}
+          </span>
+          <Drawer open={open} onClose={toggleDrawer(false)}>
+            {DrawerList}
+          </Drawer>
+        </>
+      )}
     </div>
   );
 }

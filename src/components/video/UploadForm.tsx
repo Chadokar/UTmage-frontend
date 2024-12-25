@@ -95,7 +95,7 @@ const UploadForm: React.FC<UploadFormProps> = ({ isModel = false }) => {
       })
       .catch((error) => {
         createToast("Error deleting video ", "error");
-        console.log("Error deleting video: ", error);
+        // console.log("Error deleting video: ", error);
       });
   };
 

@@ -40,7 +40,7 @@ export const uploadFileToYT = async (
     return response.data;
     // return response.data;
   } catch (error) {
-    console.error("Error uploading file:", error);
+    // console.error("Error uploading file:", error);
     createToast("Error uploading file", "error");
     return error;
   }
@@ -64,8 +64,8 @@ export const tilteDescriptionSubmit = async ({
     if (response.data.success)
       createToast("Video created/Updated successfully", "success");
     return response.data;
-    console.log("response: ", response.data);
+    // console.log("response: ", response.data);
   } catch (error: any) {
-    console.error("Error uploading video: ", error);
+    // console.error("Error uploading video: ", error);
   }
 };

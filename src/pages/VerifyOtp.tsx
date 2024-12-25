@@ -26,7 +26,7 @@ const VerifyOtp = () => {
         navigate(`/resetpassword/${response.data.token}`);
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 

@@ -102,7 +102,7 @@ const AddMember: React.FC = () => {
     //   });
     axiosPostRequest("/user/add-member", {}, formData)
       .then((response) => {
-        console.log("response: ", response);
+        // console.log("response: ", response);
         createToast("member added successfully", "success");
         queryClient.invalidateQueries({
           queryKey: ["members"],
@@ -110,7 +110,7 @@ const AddMember: React.FC = () => {
         handleClose();
       })
       .catch((error) => {
-        console.error("Error adding member: ", error.response.data);
+        // console.error("Error adding member: ", error.response.data);
         createToast(
           error?.response?.data.error || error?.message || "An error occurred",
           "error"

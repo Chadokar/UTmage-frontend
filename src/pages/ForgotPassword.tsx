@@ -23,7 +23,7 @@ const ForgotPassword = () => {
         navigate(`/verifytoken/${response.data.token}`);
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 

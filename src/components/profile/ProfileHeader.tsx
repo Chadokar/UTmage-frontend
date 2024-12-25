@@ -20,7 +20,7 @@ const ProfileHeader: React.FC = () => {
   const channel: ChannelProps = JSON.parse(
     localStorage.getItem("channel") || ""
   );
-  console.log("channel: ", channel);
+  // console.log("channel: ", channel);
 
   if (!user || user === undefined || user === null || !channel) {
     return <Loader />;
