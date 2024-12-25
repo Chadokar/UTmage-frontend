@@ -16,6 +16,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient: QueryClient = new QueryClient();
 
+console.log(process.env.REACT_APP_BACKEND_URL);
+console.log(process.env.REACT_APP_FILE_BACKEND_URL);
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
